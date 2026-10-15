@@ -1,0 +1,6 @@
+node_modules/
+scores.sqlite
+scores.sqlite-shm
+scores.sqlite-wal
+*.log
+.DS_Store

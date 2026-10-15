@@ -1,0 +1,10 @@
+{
+  "name": "cybersecurity-endpoint-station",
+  "version": "2.0.0",
+  "private": false,
+  "description": "A local multiplayer networking and cybersecurity board game",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=22.5.0" },
+  "license": "UNLICENSED"
+}

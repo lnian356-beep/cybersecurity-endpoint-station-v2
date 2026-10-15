@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>資安終點站｜封包日記</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css?edition=board3">
+</head>
+<body>
+  <!-- 背景動態光暈與科技網格 -->
+  <div class="ambient-bg" aria-hidden="true">
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+    <div class="cyber-grid"></div>
+  </div>
+
+  <!-- 勝利彩帶畫布 -->
+  <canvas id="confetti" aria-hidden="true"></canvas>
+
+  <header>
+    <div class="brand">
+      <div class="logo-box">◈</div>
+      <div>
+        <b class="logo-mark">資安終點站</b>
+        <span class="badge-pill">資訊網路課堂遊戲</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <button id="soundToggle" class="icon-btn" type="button" title="切換音效">🔊 音效開啟</button>
+      <span class="header-meta">資訊網路（一）</span>
+    </div>
+  </header>
+
+  <main>
+    <!-- 1. 首頁與賽前設定 -->
+    <section id="intro">
+      <div class="hero">
+        <div class="hero-copy">
+          <div class="eyebrow"><span class="pulse-dot"></span>資訊網路課堂遊戲</div>
+          <h1>封包慢慢走<br><em>十題分勝負。</em></h1>
+          <p>找兩到四位同學一起玩，輪流擲骰、答題。答對題數多的人獲勝。</p>
+          <div class="hero-metrics">
+            <div><b>七層</b><span>OSI 架構</span></div>
+            <div><b>十六格</b><span>棋盤一圈</span></div>
+            <div><b>成績</b><span>留在這台電腦</span></div>
+          </div>
+        </div>
+
+        <div class="art" aria-hidden="true">
+          <div class="orbit-ring r1"></div>
+          <div class="orbit-ring r2"></div>
+          <div class="float-badge b1"><span>TCP</span><small>連線握手</small></div>
+          <div class="float-badge b2"><span>IP 位址</span><small>子網路遮罩</small></div>
+          <div class="core-card">
+            <div class="core-header">
+              <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+              <small>封包小記</small>
+            </div>
+            <div class="core-body">
+              <small>準備出發</small>
+              <b>資安終點站</b>
+              <div class="hex-stream">0x45 0x00 0x00 0x3c · TTL=64</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="setup">
+        <div class="setup-col">
+          <div class="section-title">
+            <h2>玩家名字</h2>
+            <small>2–4 人，一台輪流玩</small>
+          </div>
+          <div id="players"></div>
+          <button id="addPlayer" class="add" type="button">＋ 加一位玩家</button>
+        </div>
+
+        <div class="setup-col">
+          <div class="section-title">
+            <h2>選個難度</h2>
+            <small>每題時間和答題分數不同</small>
+          </div>
+          <div class="modes">
+            <button class="mode" data-mode="beginner" type="button">
+              <div class="mode-top"><b>入門</b><i class="tag-cyan">30 秒</i></div>
+              <small>答對 <em>+150 ◈</em> · 答錯不扣分</small>
+            </button>
+            <button class="mode selected" data-mode="normal" type="button">
+              <div class="mode-top"><b>普通</b><i class="tag-emerald">20 秒</i></div>
+              <small>答對 <em>+200 ◈</em> · 答錯 −80 ◈</small>
+            </button>
+            <button class="mode" data-mode="hard" type="button">
+              <div class="mode-top"><b>困難</b><i class="tag-amber">12 秒</i></div>
+              <small>答對 <em>+300 ◈</em> · 答錯 −150 ◈</small>
+            </button>
+            <button class="mode gay" data-mode="gay" type="button">
+              <div class="mode-top"><b>GAY炮</b><i class="tag-neon">8 秒</i></div>
+              <small>答對 <em>+500 ◈</em> · 答錯 −250 ◈</small>
+            </button>
+            <button class="mode endless-mode" data-mode="endless" type="button" disabled>
+              <div class="mode-top"><b>無盡對決 <span class="lockMark">🔒</span></b><i class="tag-neon">30 秒</i></div>
+              <small class="endless-status">隱藏關卡｜兩位玩家都通過 GAY炮 才能解鎖</small>
+            </button>
+          </div>
+          <p class="scope">一般難度題目：OSI、TCP／UDP、封裝、MAC／IP／ARP 和 TTL。臨時事件只會抽這些範圍的題目。</p>
+        </div>
+
+        <button id="start" class="start-btn" type="button">
+          <span>開始遊戲</span>
+          <kbd>開始</kbd>
+        </button>
+      </div>
+
+      <section class="records">
+        <div class="records-head">
+          <div>
+            <h2>最近成績</h2>
+            <small>成績存在這台電腦</small>
+          </div>
+          <span class="mono-pill">前十名</span>
+        </div>
+        <div id="scores" class="scorelist"></div>
+      </section>
+    </section>
+
+    <!-- 2. 遊戲主畫面 -->
+    <section id="game" class="hidden">
+      <div class="heading">
+        <div class="heading-left">
+          <div class="eyebrow"><span class="pulse-dot"></span>遊戲進行中</div>
+          <h2><span id="round">第 1 / 10 回合</span> <span id="modeLabel" class="mode-badge">普通模式</span></h2>
+        </div>
+        <button id="reset" class="light" type="button">結束遊戲</button>
+      </div>
+
+      <div class="layout">
+        <!-- 棋盤與擲骰區 -->
+        <section class="boardpanel">
+          <div class="board-header">
+            <div class="boardtitle">棋盤</div>
+            <div class="board-legend">
+              <span><i class="lg-start"></i>起點</span>
+              <span><i class="lg-normal"></i>一般格</span>
+              <span><i class="lg-chance"></i>機會</span>
+              <span><i class="lg-fate"></i>命運</span>
+            </div>
+          </div>
+
+          <div id="board" class="board"></div>
+          <div id="playersLive" class="playersLive"></div>
+        </section>
+
+        <!-- 右側：回合倒數與題目作答區 -->
+        <aside class="control-panel">
+          <div class="turnbar">
+            <div class="turn-info">
+              <span id="playerTurn">玩家一</span>
+              <small id="turn">準備好了嗎？</small>
+            </div>
+            <div id="timer" title="作答剩餘秒數">--</div>
+          </div>
+
+          <section class="turn">
+            <div id="question"></div>
+          </section>
+
+          <div class="score">
+            <span>快捷鍵：<kbd>Space</kbd> 擲骰/繼續 · <kbd>1</kbd>–<kbd>4</kbd> 或 <kbd>A</kbd>–<kbd>D</kbd> 選答案</span>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- 3. 玩家交棒過場畫面 -->
+    <section id="handoff" class="hidden">
+      <div class="handoff">
+        <div class="eyebrow"><span class="pulse-dot"></span>換下一位</div>
+        <div class="handoffIcon">⇄</div>
+        <h2>換下一位玩家</h2>
+        <p>把裝置交給 <b id="nextName"></b>，準備好就開始。</p>
+        <button id="ready" class="start-btn" type="button">
+          <span>我是 <em id="readyName"></em>，開始</span>
+          <kbd>空白鍵</kbd>
+        </button>
+      </div>
+    </section>
+
+    <!-- 4. 結算頒獎台畫面 -->
+    <section id="end" class="hidden">
+      <div class="endcard">
+        <div class="medal">🏆</div>
+        <div class="eyebrow"><span class="pulse-dot"></span>遊戲結束</div>
+        <h2 id="winner"></h2>
+        <div id="winnerTitle" class="winnerTitle"></div>
+        <p id="subtitle"></p>
+        <div id="finalRanks" class="finalRanks"></div>
+        <section class="afterGame" aria-live="polite">
+          <div class="afterGameHead">
+            <h3>本局答題回顧</h3>
+            <p id="reviewSummary"></p>
+          </div>
+          <div id="topicReview" class="topicReview"></div>
+          <div id="wrongReview" class="wrongReview"></div>
+          <div class="titleShelf">
+            <div class="afterGameHead">
+              <h3>稱號收藏</h3>
+              <p id="titleSummary"></p>
+            </div>
+            <div id="newTitles" class="newTitles"></div>
+            <details class="titleCollection">
+              <summary>查看已解鎖稱號</summary>
+              <div id="titleCollection" class="titleCollectionGrid"></div>
+            </details>
+          </div>
+        </section>
+        <button id="again" class="start-btn" type="button">
+          <span>再玩一次</span>
+          <kbd>ENTER</kbd>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>資安終點站・資訊網路課堂遊戲</span>
+    <span>答完十題，看看誰答對最多。</span>
+  </footer>
+
+  <script src="/app.js?edition=board3" defer></script>
+</body>
+</html>
+
+
+
+
+
+
