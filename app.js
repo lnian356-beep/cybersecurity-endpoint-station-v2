@@ -704,6 +704,9 @@ async function finish(s) {
 
 async function loadScores() {
   try {
+    const config = await api('/api/config', null, 'GET');
+    $('#storageScope').textContent = config.storage === 'cloud' ? '雲端共用' : '留在這台電腦';
+    $('#recordsStorageNote').textContent = config.storage === 'cloud' ? '成績同步保存於雲端，可跨裝置查看' : '成績存在這台電腦';
     const data = await api('/api/scores', null, 'GET'),
       target = $('#scores');
     target.innerHTML = '';

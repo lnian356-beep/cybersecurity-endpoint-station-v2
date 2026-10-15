@@ -146,6 +146,7 @@ async function record(g) {
 const server = http.createServer(async (q, r) => {
   try {
     let u = new URL(q.url, 'http://localhost');
+    if (q.method === 'GET' && u.pathname === '/api/config') return send(r, 200, { storage: usePostgres ? 'cloud' : 'local' });
     if (q.method === 'GET' && u.pathname === '/api/scores') return send(r, 200, { scores: await all('SELECT player_name AS name,difficulty,correct,total,coins,elapsed,created_at FROM results ORDER BY correct DESC,coins DESC,elapsed ASC LIMIT 10', 'SELECT player_name AS name,difficulty,correct,total,coins,elapsed,created_at FROM results ORDER BY correct DESC,coins DESC,elapsed ASC LIMIT 10') });
     if (q.method === 'GET' && u.pathname === '/api/unlocks') {
       const names = String(u.searchParams.get('names') || '').split('|').map(x => x.trim().slice(0,12)).filter(Boolean);
