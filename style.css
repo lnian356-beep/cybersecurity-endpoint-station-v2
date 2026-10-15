@@ -1604,3 +1604,82 @@ h1,h2,h3,.logo-mark,.hero-metrics b,.section-title h2,.records-head h2,.heading 
 .titleCollectionGrid{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
 .collectionTitle{padding:5px 9px;border-radius:5px;background:#eeece3;color:#55564c;font-size:13px}
 @media(max-width:600px){.afterGame{padding:15px;margin:18px 0}.afterGameHead h3{font-size:18px}.reviewQuestion{padding:12px}.topicChip,.titleBadge{font-size:13px}}
+
+
+/* 隱藏魔王關卡：解鎖演出 */
+.unlockCurtain{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;overflow:hidden;padding:20px;background:rgba(22,18,20,.94);backdrop-filter:blur(8px);opacity:0;transition:opacity .35s ease}
+.unlockCurtain.revealed{opacity:1}
+.unlockCurtain.leaving{opacity:0;transform:scale(1.025)}
+.unlockRays{position:absolute;inset:-40%;pointer-events:none;background:repeating-conic-gradient(from 0deg at 50% 50%,rgba(181,139,76,.13) 0deg 7deg,transparent 7deg 17deg);mask-image:radial-gradient(circle at center,#000 0%,transparent 65%);animation:unlockRays 26s linear infinite}
+.unlockCard{position:relative;width:min(540px,100%);padding:clamp(30px,7vw,62px) 28px 34px;border:1px solid #92744a;border-radius:14px;background:radial-gradient(ellipse at 50% 5%,#49382f,#292329 58%,#211f25);box-shadow:0 0 0 7px rgba(185,145,76,.08),0 24px 100px rgba(0,0,0,.62),0 0 70px rgba(145,65,54,.25);text-align:center;color:#f2e8d5;transform:translateY(28px) scale(.84);opacity:0}
+.unlockCurtain.revealed .unlockCard{animation:unlockCardIn .8s cubic-bezier(.16,1,.3,1) forwards}
+.unlockSigil{display:grid;place-items:center;width:82px;height:82px;margin:0 auto 20px;border:1px solid #c4a46a;border-radius:50%;color:#e4c37d;background:radial-gradient(circle,#735b3b,#392e2b 70%);box-shadow:0 0 0 7px rgba(196,164,106,.08),0 0 34px rgba(196,164,106,.33);font-family:"Noto Serif TC",serif;font-size:44px;animation:sigilRise 1.2s .25s both}
+.unlockEyebrow{margin:0 0 10px;color:#d9ba7c;font-size:13px;letter-spacing:.22em;font-weight:700}
+.unlockCard h2{margin:0;color:#fff4df;font-family:"Noto Serif TC","PMingLiU",serif;font-size:clamp(44px,11vw,76px);line-height:1.15;letter-spacing:.08em;text-shadow:0 3px 0 #51382e,0 0 28px rgba(210,156,89,.35)}
+.unlockCard h2 em{color:#d9a66b;font-style:normal}
+.unlockCopy{margin:18px 0;color:#d5cbb9;font-size:17px;line-height:1.8}
+.unlockRule{display:flex;justify-content:center;align-items:center;gap:12px;margin:20px 0 26px;color:#c9ae78;font-size:14px}
+.unlockRule i{color:#a66c58;font-style:normal}
+#unlockContinue{min-height:48px;padding:11px 22px;border:1px solid #bd9861;border-radius:6px;background:linear-gradient(135deg,#816343,#634638);color:#fff4df;font:700 16px var(--font-sans);cursor:pointer;box-shadow:0 6px 24px rgba(0,0,0,.26);transition:transform .2s,filter .2s}
+#unlockContinue:hover{transform:translateY(-2px);filter:brightness(1.13)}
+#unlockContinue:focus-visible{outline:3px solid #f1d38a;outline-offset:3px}
+@keyframes unlockRays{to{transform:rotate(360deg)}}
+@keyframes unlockCardIn{0%{opacity:0;transform:translateY(50px) scale(.72)}60%{opacity:1;transform:translateY(-8px) scale(1.035)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes sigilRise{0%{transform:rotate(-25deg) scale(.3);opacity:0}70%{transform:rotate(8deg) scale(1.12);opacity:1}100%{transform:rotate(0) scale(1)}}
+@media(max-width:480px){.unlockCard{padding:32px 19px 25px}.unlockSigil{width:68px;height:68px;font-size:36px}.unlockCopy{font-size:15px}.unlockRule{font-size:12px;gap:8px}}
+
+/* 無盡對決：墨綠、暗酒紅和銅金，保留紙感層次 */
+body.endlessTheme{--bg-base:#242a27;--bg-elevated:#303632;--surface:rgba(48,55,50,.96);--surface-solid:#343b36;--surface-hover:#3c453e;--border:rgba(207,181,133,.2);--text-main:#f0e8d8;--text-secondary:#c4bba9;--text-muted:#a69b88;--cyan:#c59b65;--emerald:#82906c;--amber:#ca855f;--rose:#bd7568;--purple:#988174;background:radial-gradient(ellipse at 50% 0%,rgba(134,97,69,.3),transparent 52%),#242a27;color:#f0e8d8;transition:background .6s,color .4s}
+body.endlessTheme .glow-1{background:radial-gradient(circle,#7e5248 0%,transparent 70%);opacity:.32}
+body.endlessTheme .glow-2{background:radial-gradient(circle,#677457 0%,transparent 70%);opacity:.25}
+body.endlessTheme .cyber-grid{opacity:.28}
+body.endlessTheme header,body.endlessTheme footer{border-color:rgba(207,181,133,.2);color:#c6b9a1}
+body.endlessTheme .badge-pill,body.endlessTheme .header-meta{color:#d1c2a6}
+body.endlessTheme .setup,body.endlessTheme .records,body.endlessTheme .boardpanel,body.endlessTheme .turn,body.endlessTheme .turnbar,body.endlessTheme .score,body.endlessTheme .handoff,body.endlessTheme .endcard{background:rgba(48,55,50,.96)!important;border-color:rgba(207,181,133,.24)!important;color:#f0e8d8;box-shadow:0 12px 38px rgba(0,0,0,.2)!important}
+body.endlessTheme .section-title h2,body.endlessTheme .records-head h2,body.endlessTheme .heading h2,body.endlessTheme .boardtitle,body.endlessTheme .questionTitle,body.endlessTheme .center b{color:#f0e8d8!important}
+body.endlessTheme .section-title small,body.endlessTheme .records-head small,body.endlessTheme .board-legend,body.endlessTheme .turn-info small{color:#c4bba9}
+body.endlessTheme .board{background:#292f2b!important;border-color:#68634f!important}
+body.endlessTheme .tile{background:#3a413b!important;border-color:#68634f!important;color:#f0e8d8!important}
+body.endlessTheme .tile.start{background:#3d493d!important}
+body.endlessTheme .tile.chance{background:#514238!important}
+body.endlessTheme .tile.fate{background:#4c3d3b!important}
+body.endlessTheme .tile.current{outline-color:#d3a263!important;box-shadow:0 0 0 4px rgba(211,162,99,.23)!important}
+body.endlessTheme .tile-name,body.endlessTheme .tile-top{color:#f0e8d8!important}
+body.endlessTheme .center{background:radial-gradient(ellipse,#484437,#303632)!important;border-color:#9b8054!important;color:#f2e8d5!important;box-shadow:inset 0 0 35px rgba(0,0,0,.22)!important}
+body.endlessTheme .center small{color:#d3ba8e!important}
+body.endlessTheme .cube-face{background:#574a3b!important;border-color:#b08f5c!important;color:#f4d48a!important;box-shadow:inset 0 0 0 4px #39362e,0 5px 22px rgba(0,0,0,.38)!important}
+body.endlessTheme .turnbar{background:#3c302f!important}
+body.endlessTheme .turn-info span{color:#f0e8d8}
+body.endlessTheme .turnbar #timer{color:#e0b36e;background:conic-gradient(#b57a58 calc(var(--progress)*1turn),#544844 0)}
+body.endlessTheme .turnbar #timer::after{background:#393b35}
+body.endlessTheme .turnbar #timer.urgent{color:#f0b394;background:conic-gradient(#b9574f calc(var(--progress)*1turn),#544844 0)}
+body.endlessTheme .playersLive .livePlayer{background:#3c443e;border-color:#6c705b;color:#f0e8d8}
+body.endlessTheme .playersLive .livePlayer.active{background:#51413b;border-color:#c58c65}
+body.endlessTheme .readyCard>span,body.endlessTheme .category{background:#474b3e!important;color:#e0c386!important;border-color:#716d53!important}
+body.endlessTheme .choice{background:#3a413b!important;color:#f0e8d8!important;border-color:#6a6a58!important}
+body.endlessTheme .choice:hover:not(:disabled){background:#4a5048!important;border-color:#bea16b!important}
+body.endlessTheme .choice>b{background:#514c3e!important;color:#e6cb91!important}
+body.endlessTheme .choice.right{background:#3f4b3b!important;border-color:#91a278!important}
+body.endlessTheme .choice.right>b{background:#53634a!important;color:#e1efcd!important}
+body.endlessTheme .choice.wrong{background:#513936!important;border-color:#c17667!important}
+body.endlessTheme .choice.wrong>b{background:#70443e!important;color:#ffe0d5!important}
+body.endlessTheme .feedback.good{background:#3c4a3c!important;color:#e4eed9!important}
+body.endlessTheme .feedback.bad{background:#523a38!important;color:#f4ddd4!important}
+body.endlessTheme .start-btn,body.endlessTheme .nextButton,body.endlessTheme #roll,body.endlessTheme .handoff button,body.endlessTheme #again{background:linear-gradient(135deg,#865d48,#65513d)!important;border-color:#bd9861!important;color:#fff0d5!important}
+body.endlessTheme .mode-badge,body.endlessTheme .light{background:#414a40!important;color:#e0cb9a!important;border-color:#746b4e!important}
+body.endlessTheme .afterGame{background:#303732!important;border-color:#77644f!important}
+body.endlessTheme .afterGameHead h3,body.endlessTheme .reviewQuestion>b{color:#f0e8d8!important}
+body.endlessTheme .afterGameHead p,body.endlessTheme .reviewQuestion p{color:#d0c4af!important}
+body.endlessTheme .reviewQuestion,body.endlessTheme .topicChip,body.endlessTheme .titleBadge,body.endlessTheme .collectionTitle{background:#3c433d!important;border-color:#696552!important;color:#e9dfca!important}
+body.endlessTheme .titleCollection summary{color:#e0c386}
+body.endlessTheme .scoreRow,body.endlessTheme .rankRow{border-color:rgba(207,181,133,.18)!important;color:#f0e8d8}
+body.endlessTheme .scoreRow:hover,body.endlessTheme .rankRow:first-child{background:#41463e!important}
+@media(prefers-reduced-motion:reduce){.unlockRays{animation:none}.unlockCard,.unlockSigil{animation-duration:.01ms!important}}
+
+body.endlessTheme header{background:rgba(43,49,44,.97)!important;border-bottom-color:rgba(207,181,133,.24)!important;backdrop-filter:blur(12px)}
+body.endlessTheme .logo-box{background:#785943!important;color:#f2dfb9!important;border:1px solid #b48c58;box-shadow:0 0 18px rgba(181,139,76,.2)}
+body.endlessTheme .logo-mark{color:#f1e7d4!important}
+body.endlessTheme .badge-pill{background:#41483f!important;border-color:#71664e!important;color:#d2bd8c!important}
+body.endlessTheme .header-meta{color:#b9ae98!important}
+body.endlessTheme .icon-btn{background:#3a413b!important;border-color:#756347!important;color:#ebd9b5!important}
+body.endlessTheme .playersLive .livePlayer>b{color:#e5c57f!important}

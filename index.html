@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@500;600;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style.css?edition=board3">
+  <link rel="stylesheet" href="/style.css?edition=secret-stage1">
 </head>
 <body>
   <!-- 背景動態光暈與科技網格 -->
@@ -19,6 +19,18 @@
 
   <!-- 勝利彩帶畫布 -->
   <canvas id="confetti" aria-hidden="true"></canvas>
+
+  <div id="unlockCurtain" class="unlockCurtain hidden" role="dialog" aria-modal="true" aria-labelledby="unlockTitle" aria-describedby="unlockCopy">
+    <div class="unlockRays" aria-hidden="true"></div>
+    <section class="unlockCard">
+      <div class="unlockSigil" aria-hidden="true"><span>♛</span></div>
+      <p class="unlockEyebrow">封印解除 · SECRET STAGE</p>
+      <h2 id="unlockTitle">魔王關卡<br><em>現身</em></h2>
+      <p id="unlockCopy" class="unlockCopy">兩位玩家都通過了 GAY炮。<br>無盡對決現在開放挑戰。</p>
+      <div class="unlockRule"><span>580 題進階題庫</span><i>·</i><span>每人 30 HP</span></div>
+      <button id="unlockContinue" type="button">收下挑戰，繼續結算</button>
+    </section>
+  </div>
 
   <header>
     <div class="brand">
@@ -89,20 +101,20 @@
               <small>答對 <em>+150 ◈</em> · 答錯不扣分</small>
             </button>
             <button class="mode selected" data-mode="normal" type="button">
-              <div class="mode-top"><b>普通</b><i class="tag-emerald">20 秒</i></div>
+              <div class="mode-top"><b>普通</b><i class="tag-emerald">25 秒</i></div>
               <small>答對 <em>+200 ◈</em> · 答錯 −80 ◈</small>
             </button>
             <button class="mode" data-mode="hard" type="button">
-              <div class="mode-top"><b>困難</b><i class="tag-amber">12 秒</i></div>
+              <div class="mode-top"><b>困難</b><i class="tag-amber">20 秒</i></div>
               <small>答對 <em>+300 ◈</em> · 答錯 −150 ◈</small>
             </button>
             <button class="mode gay" data-mode="gay" type="button">
-              <div class="mode-top"><b>GAY炮</b><i class="tag-neon">8 秒</i></div>
+              <div class="mode-top"><b>GAY炮</b><i class="tag-neon">15 秒</i></div>
               <small>答對 <em>+500 ◈</em> · 答錯 −250 ◈</small>
             </button>
-            <button class="mode endless-mode" data-mode="endless" type="button" disabled>
+            <button class="mode endless-mode hidden" data-mode="endless" type="button" disabled>
               <div class="mode-top"><b>無盡對決 <span class="lockMark">🔒</span></b><i class="tag-neon">30 秒</i></div>
-              <small class="endless-status">隱藏關卡｜兩位玩家都通過 GAY炮 才能解鎖</small>
+              <small class="endless-status">魔王關卡</small>
             </button>
           </div>
           <p class="scope">一般難度題目：OSI、TCP／UDP、封裝、MAC／IP／ARP 和 TTL。臨時事件只會抽這些範圍的題目。</p>
@@ -229,7 +241,7 @@
     <span>答完十題，看看誰答對最多。</span>
   </footer>
 
-  <script src="/app.js?edition=board3" defer></script>
+  <script src="/app.js?edition=secret-stage1" defer></script>
 </body>
 </html>
 

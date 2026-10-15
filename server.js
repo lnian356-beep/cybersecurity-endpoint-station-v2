@@ -46,9 +46,9 @@ const T = [
 
 const modes = {
   beginner: { name: '入門', seconds: 30, good: 150, bad: 0 },
-  normal: { name: '普通', seconds: 20, good: 200, bad: 80 },
-  hard: { name: '困難', seconds: 12, good: 300, bad: 150 },
-  gay: { name: 'GAY炮', seconds: 8, good: 500, bad: 250 }
+  normal: { name: '普通', seconds: 25, good: 200, bad: 80 },
+  hard: { name: '困難', seconds: 20, good: 300, bad: 150 },
+  gay: { name: 'GAY炮', seconds: 15, good: 500, bad: 250 }
 };
 
 const games = new Map();

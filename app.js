@@ -7,7 +7,8 @@ let gameId = null,
   lastState = null,
   soundEnabled = true,
   audioCtx = null,
-  lastBeepSec = -1;
+  lastBeepSec = -1,
+  endlessUnlockedBeforeGame = false;
 
 const letters = ['A', 'B', 'C', 'D'];
 const tileIcons = { start: '⚑', normal: '⌘', chance: '✦', fate: '↗' };
@@ -51,6 +52,42 @@ function playTone(type) {
     if (type === 'win') {
       [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => note(f, now + i * 0.11, 0.3, 'triangle', 0.15));
     }
+    const sweep = (from, to, start, duration, wave = 'sawtooth', volume = 0.12) => {
+      const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+      osc.type = wave;
+      osc.frequency.setValueAtTime(from, start);
+      osc.frequency.exponentialRampToValueAtTime(to, start + duration);
+      gain.gain.setValueAtTime(volume, start);
+      gain.gain.exponentialRampToValueAtTime(0.001, start + duration);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(start); osc.stop(start + duration);
+    };
+    if (type === 'unlock') {
+      sweep(196, 49, now, 0.9, 'sawtooth', 0.15);
+      [73.42, 110, 146.83].forEach((f, i) => note(f, now + i * 0.18, 0.85, 'triangle', 0.11));
+      [220, 293.66, 440, 587.33].forEach((f, i) => note(f, now + 0.8 + i * 0.13, 0.55, 'triangle', 0.12));
+    }
+    if (type === 'bossStart') {
+      sweep(130.81, 55, now, 1.15, 'sawtooth', 0.16);
+      note(55, now + 0.15, 1.1, 'triangle', 0.14);
+      [82.41, 110, 164.81].forEach((f, i) => note(f, now + 0.72 + i * 0.2, 0.48, 'triangle', 0.1));
+    }
+    if (type === 'bossRoll') {
+      sweep(392, 98, now, 0.72, 'triangle', 0.12);
+      note(65.41, now + 0.48, 0.28, 'sawtooth', 0.1);
+    }
+    if (type === 'bossRight') {
+      [146.83, 220, 293.66, 440].forEach((f, i) => note(f, now + i * 0.1, 0.32, 'triangle', 0.13));
+    }
+    if (type === 'bossHit') {
+      sweep(220, 55, now, 0.42, 'sawtooth', 0.15);
+      note(73.42, now + 0.1, 0.5, 'triangle', 0.11);
+    }
+    if (type === 'bossWin') {
+      [110, 146.83, 196, 293.66, 392, 587.33].forEach((f, i) => note(f, now + i * 0.13, 0.58, 'triangle', 0.14));
+    }
+    if (type === 'bossTick') note(523.25, now, 0.07, 'triangle', 0.08);
+    if (type === 'bossStep') note(130.81, now, 0.09, 'triangle', 0.07);
   } catch {}
 }
 
@@ -150,7 +187,30 @@ function relabel() {
 
 function names() { return [...$('#players').querySelectorAll('input')].map(x=>x.value.trim()).filter(Boolean); }
 const endlessPoolCount=580; let unlockCheckId=0;
-async function updateEndlessAvailability(){const card=$('.endless-mode'),status=$('.endless-status');if(!card||mode==='endless')return;const list=names();if(list.length!==2||list[0]===list[1]){card.disabled=true;card.classList.remove('unlocked');if(status)status.textContent=list.length===2?'兩位玩家名稱不能相同':'隱藏關卡｜兩位玩家都通過 GAY炮 才能解鎖';return;}const check=++unlockCheckId;try{const r=await api('/api/unlocks?names='+encodeURIComponent(list.join('|')),null,'GET');if(check!==unlockCheckId)return;card.disabled=!r.unlocked;card.classList.toggle('unlocked',r.unlocked);if(status)status.textContent=r.unlocked?'已解鎖｜580 題進階題庫・每人 30 HP':'尚未解鎖｜兩人都需在 GAY炮 答對至少 3 題';const mark=card.querySelector('.lockMark');if(mark)mark.textContent=r.unlocked?'✓':'🔒';}catch{}}
+async function arePlayersEndlessUnlocked(list) {
+  if (list.length !== 2 || list[0] === list[1]) return false;
+  try {
+    const result = await api('/api/unlocks?names=' + encodeURIComponent(list.join('|')), null, 'GET');
+    return result.unlocked;
+  } catch { return false; }
+}
+async function updateEndlessAvailability() {
+  const card = $('.endless-mode'), status = $('.endless-status');
+  if (!card) return;
+  const list = names(), check = ++unlockCheckId;
+  const unlocked = await arePlayersEndlessUnlocked(list);
+  if (check !== unlockCheckId) return;
+  card.classList.toggle('hidden', !unlocked);
+  card.disabled = !unlocked;
+  card.classList.toggle('unlocked', unlocked);
+  if (status) status.textContent = unlocked ? '魔王關卡已解鎖｜580 題進階題庫・每人 30 HP' : '隱藏關卡';
+  const mark = card.querySelector('.lockMark');
+  if (mark) mark.textContent = unlocked ? '♛' : '🔒';
+  if (!unlocked && mode === 'endless') {
+    mode = 'normal';
+    document.querySelectorAll('.mode').forEach(button => button.classList.toggle('selected', button.dataset.mode === mode));
+  }
+}
 
 function setTimer(seconds) {
   clearInterval(timerId);
@@ -165,7 +225,7 @@ function setTimer(seconds) {
     const secInt = Math.ceil(left);
     if (urgent && secInt !== lastBeepSec) {
       lastBeepSec = secInt;
-      playTone('tick');
+      playTone(lastState?.endless ? 'bossTick' : 'tick');
     }
     if (left <= 0) {
       clearInterval(timerId);
@@ -292,7 +352,7 @@ async function animateSteps(startPos, steps, totalTiles) {
     document.querySelectorAll('.tile').forEach(t => t.classList.remove('stepping'));
     const target = document.querySelector(`.tile[data-tile-index="${pos}"]`);
     if (target) target.classList.add('stepping');
-    playTone('step');
+    playTone(lastState?.endless ? 'bossStep' : 'step');
     await new Promise(r => setTimeout(r, 110));
   }
 }
@@ -352,8 +412,11 @@ async function start() {
   busy = true;
   $('#start').disabled = true;
   try {
+    endlessUnlockedBeforeGame = mode === 'gay' ? await arePlayersEndlessUnlocked(list) : false;
     const s = await api('/api/start', { players: list, difficulty: mode });
     gameId = s.id;
+    document.body.classList.toggle('endlessTheme', s.endless);
+    if (s.endless) playTone('bossStart');
     draw(s);
     view('game');
     ready();
@@ -372,7 +435,7 @@ async function roll() {
   if (b) b.disabled = true;
   const prevPos = lastState ? lastState.currentPlayer.position : 0;
 
-  playTone('roll');
+  playTone(lastState?.endless ? 'bossRoll' : 'roll');
   const cube = $('#diceCube');
   if (cube) cube.classList.add('rolling');
   const diceScene = $('#centerDice');
@@ -415,7 +478,7 @@ async function answer(choice) {
     if (r.answer >= 0 && buttons[r.answer]) buttons[r.answer].classList.add('right');
     if (choice >= 0 && !r.correct && buttons[choice]) buttons[choice].classList.add('wrong');
 
-    playTone(r.correct ? 'right' : 'wrong');
+    playTone(s.endless ? (r.correct ? 'bossRight' : 'bossHit') : (r.correct ? 'right' : 'wrong'));
 
     const f = document.createElement('div');
     f.className = 'feedback ' + (r.correct ? 'good' : 'bad');
@@ -576,9 +639,38 @@ function renderAfterGame(s, ordered) {
   }) : [Object.assign(document.createElement('p'), { className: 'titleQuiet', textContent: '目前還沒有解鎖的稱號。答對不同主題的題目，就會慢慢收進收藏。' })]));
 }
 
-function finish(s) {
+async function showEndlessUnlock() {
+  const curtain = $('#unlockCurtain'), button = $('#unlockContinue');
+  if (!curtain || !button) return;
+  curtain.classList.remove('hidden');
+  requestAnimationFrame(() => curtain.classList.add('revealed'));
+  playTone('unlock');
+  button.focus();
+  await new Promise(resolve => {
+    button.onclick = () => {
+      curtain.classList.remove('revealed');
+      curtain.classList.add('leaving');
+      setTimeout(() => {
+        curtain.classList.add('hidden');
+        curtain.classList.remove('leaving');
+        button.onclick = null;
+        resolve();
+      }, 360);
+    };
+  });
+}
+
+async function finish(s) {
+  if (s.difficulty === 'GAY炮' && !endlessUnlockedBeforeGame && s.players.length === 2 && s.players[0].name !== s.players[1].name) {
+    const unlocked = await arePlayersEndlessUnlocked(s.players.map(player => player.name));
+    endlessUnlockedBeforeGame = unlocked;
+    if (unlocked) {
+      updateEndlessAvailability();
+      await showEndlessUnlock();
+    }
+  }
   stopTimer();
-  playTone('win');
+  playTone(s.endless ? 'bossWin' : 'win');
   fireConfetti();
   const ordered=[...s.players].sort((a,b)=>s.endless?b.hp-a.hp:b.correct-a.correct||b.coins-a.coins);const tied=!s.endless&&ordered.length>1&&ordered[0].correct===ordered[1].correct&&ordered[0].coins===ordered[1].coins;$('#winner').textContent=s.endless?`🏆 ${s.winner||ordered[0].name} 贏下無盡對決！`:tied?'平手！':'👑 '+ordered[0].name+' 贏了！';
   $('#winnerTitle').textContent = tied ? '本場最佳稱號｜' + (ordered[0].bestTitle || '新手上路') : '本場稱號｜' + (ordered[0].bestTitle || '新手上路');
@@ -645,6 +737,7 @@ function reset() {
   gameId = null;
   lastState = null;
   view('intro');
+  document.body.classList.remove('endlessTheme');
   loadScores();
   updateEndlessAvailability();
 }
