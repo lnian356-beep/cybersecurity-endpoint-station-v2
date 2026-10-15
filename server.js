@@ -69,7 +69,7 @@ function read(q) {
 
 function shuffled(a) {
   a = [...a];
-  for (let i = a.length - 1; i; i--) {
+  for (let i = a.length - 1; i > 0; i--) {
     let j = crypto.randomInt(i + 1);
     [a[i], a[j]] = [a[j], a[i]];
   }
@@ -282,6 +282,7 @@ const server = http.createServer(async (q, r) => {
 
     return send(r, 404, { error: '找不到頁面' });
   } catch (e) {
+    console.error(e.stack || e);
     send(r, 500, { error: '伺服器發生錯誤' });
   }
 });

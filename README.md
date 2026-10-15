@@ -19,6 +19,6 @@ Windows 免安裝包包含 Node.js 24.21.0。解壓後執行 `start-game.bat`，
 
 ## GitHub 下載包
 
-如果從 GitHub 下載，請下載 `game-part1.bin`、`game-part2.bin` 和 `merge-game.bat`，放在同一個資料夾後執行 `merge-game.bat`，再到產生的 `game` 資料夾執行 `start-game.bat`。也可以直接下載完整 ZIP：`資安終點站-Windows-免安裝版.zip`。
+如果從 GitHub 下載，請下載 `game-part1.bin`、`game-part2.bin` 和 `merge-game.bat`，放在同一個資料夾後執行 `merge-game.bat`，再到產生的 `game` 資料夾執行 `start-game.bat`。
 
 Node.js Windows 執行檔取自官方發行版，授權資訊及 SHA256 清單隨包附上。
